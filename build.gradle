@@ -16,6 +16,8 @@ allprojects {
     repositories {
         google()
         jcenter()
+        //lab 07
+        maven{ url 'https://jitpack.io'}
     }
 }
 
