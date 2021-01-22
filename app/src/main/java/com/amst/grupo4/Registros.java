@@ -36,7 +36,7 @@ import javax.xml.transform.Source;
 public class Registros extends AppCompatActivity {
     public BarChart graficosBarras;
     private RequestQueue ListaRequest = null;
-    private String token = "1";
+    private String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6InByYWN0aWNhMDIiLCJleHAiOjE1NjQ3NjQzMzcsImVtYWlsIjoicHJhY0Bob3RtYWlsLmNvbSJ9.PqjZZXxwF-wU1POjtvvHfl4UWK2W6F-0TeSO08C69FE";
     private LinearLayout contentedorTemperaturas;
     private Map<String, TextView> temperaturasTVs;
     private Map<String,TextView> fechasTVs;
@@ -61,7 +61,7 @@ public class Registros extends AppCompatActivity {
     }
 
     public void iniciarGrafico(){
-        //graficosBarras = findViewById(R.id.barChart);
+        graficosBarras = findViewById(R.id.barChart);
         graficosBarras.getDescription().setEnabled(false);
         graficosBarras.setMaxVisibleValueCount(60);
         graficosBarras.setPinchZoom(false);
@@ -78,32 +78,19 @@ public class Registros extends AppCompatActivity {
     }
 
     public void solicitarTemperaturas(){
-        String url_registros = "https:amstdb.herokuapp.com/db/logTres";
-        JsonArrayRequest requestRegistros = new JsonArrayRequest(
-                Request.Method.GET, url_registros,null,
-        new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                mostrarTemperaturas(response);
-                actualizarGrafico(response);
-            }
-        }
-        , new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.println(error);
-            }
-        });
-
-        ListaRequest.add(requestRegistros);
-    }
-    /*@Override
-    public Map<String, String> getHeaders(){
-        Map<String,String> params = new HashMap<>();
+        String url_registros = "https://practica-de-laboratorio-6.firebaseio.com/Registros.json";
+        JsonArrayRequest requestRegistros =  new JsonArrayRequest( Request.Method.GET,
+                url_registros, null,  new Response.Listener<JSONArray>()
+        { @Override public void onResponse(JSONArray response) {
+            mostrarTemperaturas(response);
+            actualizarGrafico(response);
+        }}, new Response.ErrorListener() {
+            @Override public void onErrorResponse(VolleyError error) { System.out.println(error); } })
+        {  @Override public Map<String, String> getHeaders()
+        { Map<String, String> params = new HashMap<>();
         params.put("Authorization", "JWT   " + token);
-        return params;
-    }*/
-
+        return params; } };
+        ListaRequest.add(requestRegistros); }
     private void mostrarTemperaturas(JSONArray temperaturas){
         String registroId;
         JSONObject registroTemp;
@@ -111,7 +98,7 @@ public class Registros extends AppCompatActivity {
         TextView fechaRegistro;
         TextView valorRegistro;
 
-        //contentedorTemperaturas = findViewById(R.id.cont_temperaturas);
+        contentedorTemperaturas = findViewById(R.id.cont_temperaturas);
         LinearLayout.LayoutParams parametrosLayout = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
